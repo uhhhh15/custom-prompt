@@ -278,7 +278,10 @@ function openMigrationModal(defaultValue) {
         // 4. Show modal
         requestAnimationFrame(() => {
             modalContainer.classList.add('visible');
-            input.focus();
+            // 仅在非触摸设备上自动聚焦，以避免在手机上自动弹出键盘
+            if (!('ontouchstart' in window)) {
+                input.focus();
+            }
         });
     });
 }
@@ -510,7 +513,10 @@ function openPresetEditor(currentValue) {
         // Using requestAnimationFrame to ensure the transition is applied after the element is in the DOM
         requestAnimationFrame(() => {
             modalContainer.classList.add('visible');
-            textarea.focus();
+            // 仅在非触摸设备上自动聚焦，以避免在手机上自动弹出键盘
+            if (!('ontouchstart' in window)) {
+                textarea.focus();
+            }
         });
     });
 }
