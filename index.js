@@ -11,13 +11,13 @@ import {
     chat,
     getRequestHeaders,
     saveSettingsDebounced,
-    extension_prompt_types, // <-- 新增
-    extension_prompt_roles, // <-- 新增
+    extension_prompt_types, 
+    extension_prompt_roles, 
     doNewChat,
     renameChat,
     openCharacterChat,
     reloadCurrentChat,
-    saveChatConditional, // <-- 新增
+    saveChatConditional, 
 } from '../../../../script.js';
 // ...
 import {
@@ -944,7 +944,6 @@ async function saveAllDirtyChanges() {
     if (dirtyChats.size === 0) return; // Nothing to save
 
     console.log(`[${pluginName}] Saving prompts for ${dirtyChats.size} modified chats.`);
-    toastr.info('正在自动保存提示词...');
 
     const context = getContext();
     const currentContextChatIdNoExt = String(context.chatId || '').replace('.jsonl', '');
@@ -980,7 +979,6 @@ async function saveAllDirtyChanges() {
     }
 
     if (dirtyChats.size === 0) {
-        toastr.success('所有提示词已成功保存！');
     }
 }
 
@@ -1022,3 +1020,4 @@ jQuery(async () => {
         console.error(`[${pluginName}] Initialization failed:`, error);
     }
 });
+
