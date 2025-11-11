@@ -81,6 +81,9 @@
     transition: transform 0.4s ease-out !important;
     transform: rotate(0deg);
     flex-shrink: 0;
+    /* === 新增：移除移动端触摸高亮和焦点轮廓 === */
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
 }
 .prompt-injector-modal-dialog:not(.sidebar-closed) .prompt-injector-sidebar-toggle {
     transform: rotate(360deg) !important;
