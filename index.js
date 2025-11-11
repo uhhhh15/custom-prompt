@@ -3,19 +3,21 @@
 // This version is refactored to manage and inject per-chat custom prompts.
 
 // --- SillyTavern Core Imports ---
+// index.js (Custom Prompt Injector Plugin)
+// ... (lines 1-5)
 import {
     eventSource,
     event_types,
     chat,
     getRequestHeaders,
     saveSettingsDebounced,
-    extension_prompt_types, 
-    extension_prompt_roles,
+    extension_prompt_types, // <-- 新增
+    extension_prompt_roles, // <-- 新增
     doNewChat,
     renameChat,
     openCharacterChat,
     reloadCurrentChat,
-    saveChatConditional,
+    saveChatConditional, // <-- 新增
 } from '../../../../script.js';
 // ...
 import {
@@ -67,10 +69,9 @@ let dirtyChats = new Set();             // NEW: Tracks chat file names that have
  */
 function applySavedTheme() {
     // This plugin will respect the theme set by the main 'star' plugin if present.
-    const savedTheme = localStorage.getItem('favorites-theme');
-    const isDark = savedTheme === 'dark';
+    // MODIFICATION: Force light theme by always removing the dark-theme class.
     if (modalDialogElement) {
-        modalDialogElement.classList.toggle('dark-theme', isDark);
+        modalDialogElement.classList.remove('dark-theme');
     }
 }
 
@@ -217,9 +218,7 @@ function openMigrationModal(defaultValue) {
         const modalContainer = document.createElement('div');
         modalContainer.id = 'migrationModal';
 
-        if (modalDialogElement && modalDialogElement.classList.contains('dark-theme')) {
-            modalContainer.classList.add('dark-theme');
-        }
+        // MODIFICATION: Removed the logic that checks for and adds 'dark-theme'.
 
         modalContainer.innerHTML = `
             <div class="migration-dialog">
@@ -445,10 +444,7 @@ function openPresetEditor(currentValue) {
         const modalContainer = document.createElement('div');
         modalContainer.id = 'presetEditorModal';
 
-        // Check for dark theme on the main modal to apply it here too
-        if (modalDialogElement && modalDialogElement.classList.contains('dark-theme')) {
-            modalContainer.classList.add('dark-theme');
-        }
+        // MODIFICATION: Removed the logic that checks for and adds 'dark-theme'.
 
         modalContainer.innerHTML = `
             <div class="preset-editor-dialog">
@@ -1020,4 +1016,3 @@ jQuery(async () => {
         console.error(`[${pluginName}] Initialization failed:`, error);
     }
 });
-
