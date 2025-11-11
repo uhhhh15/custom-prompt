@@ -177,14 +177,18 @@ function ensureModalStructure() {
     modalBodyElement.addEventListener('click', handleModalClick);
 }
 
-function centerModal() {
-    if (!modalDialogElement) return;
+function centerDialogElement(dialogElement) {
+    if (!dialogElement) return;
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
-    const dialogWidth = modalDialogElement.offsetWidth;
-    const dialogHeight = modalDialogElement.offsetHeight;
-    modalDialogElement.style.left = `${Math.max(0, (windowWidth - dialogWidth) / 2)}px`;
-    modalDialogElement.style.top = `${Math.max(0, (windowHeight - dialogHeight) / 2)}px`;
+    const dialogWidth = dialogElement.offsetWidth;
+    const dialogHeight = dialogElement.offsetHeight;
+    dialogElement.style.left = `${Math.max(0, (windowWidth - dialogWidth) / 2)}px`;
+    dialogElement.style.top = `${Math.max(0, (windowHeight - dialogHeight) / 2)}px`;
+}
+
+function centerModal() {
+    centerDialogElement(modalDialogElement);
 }
 
 /**
@@ -217,8 +221,7 @@ function openMigrationModal(defaultValue) {
         // 1. Create Modal Elements
         const modalContainer = document.createElement('div');
         modalContainer.id = 'migrationModal';
-
-        // MODIFICATION: Removed the logic that checks for and adds 'dark-theme'.
+        modalContainer.style.display = 'block'; // Set display to block
 
         modalContainer.innerHTML = `
             <div class="migration-dialog">
@@ -237,11 +240,15 @@ function openMigrationModal(defaultValue) {
         `;
         document.body.appendChild(modalContainer);
 
+        const dialog = modalContainer.querySelector('.migration-dialog');
         const input = modalContainer.querySelector('.migration-input');
         input.value = defaultValue;
 
+        const resizeHandler = () => centerDialogElement(dialog);
+
         // 2. Cleanup and Close Logic
         const cleanupAndClose = (reason) => {
+            window.removeEventListener('resize', resizeHandler); // Clean up resize listener
             document.removeEventListener('keydown', handleEsc);
             modalContainer.remove();
             if (reason) {
@@ -275,10 +282,12 @@ function openMigrationModal(defaultValue) {
         };
         document.addEventListener('keydown', handleEsc);
 
-        // 4. Show modal
+        // 4. Show and Center modal
+        centerDialogElement(dialog);
+        window.addEventListener('resize', resizeHandler);
+
         requestAnimationFrame(() => {
             modalContainer.classList.add('visible');
-            // 仅在非触摸设备上自动聚焦，以避免在手机上自动弹出键盘
             if (!('ontouchstart' in window)) {
                 input.focus();
             }
@@ -446,8 +455,7 @@ function openPresetEditor(currentValue) {
         // 1. Create Modal Elements
         const modalContainer = document.createElement('div');
         modalContainer.id = 'presetEditorModal';
-
-        // MODIFICATION: Removed the logic that checks for and adds 'dark-theme'.
+        modalContainer.style.display = 'block'; // Set display to block
 
         modalContainer.innerHTML = `
             <div class="preset-editor-dialog">
@@ -477,11 +485,15 @@ function openPresetEditor(currentValue) {
         `;
         document.body.appendChild(modalContainer);
 
+        const dialog = modalContainer.querySelector('.preset-editor-dialog');
         const textarea = modalContainer.querySelector('.preset-editor-textarea');
         textarea.value = currentValue;
 
+        const resizeHandler = () => centerDialogElement(dialog);
+
         // 2. Cleanup and Close Logic
         const cleanupAndClose = (reason) => {
+            window.removeEventListener('resize', resizeHandler); // Clean up resize listener
             document.removeEventListener('keydown', handleEsc);
             modalContainer.remove();
             if (reason) {
@@ -509,11 +521,12 @@ function openPresetEditor(currentValue) {
         };
         document.addEventListener('keydown', handleEsc);
 
-        // 4. Show modal with animation
-        // Using requestAnimationFrame to ensure the transition is applied after the element is in the DOM
+        // 4. Show and Center modal
+        centerDialogElement(dialog);
+        window.addEventListener('resize', resizeHandler);
+
         requestAnimationFrame(() => {
             modalContainer.classList.add('visible');
-            // 仅在非触摸设备上自动聚焦，以避免在手机上自动弹出键盘
             if (!('ontouchstart' in window)) {
                 textarea.focus();
             }
@@ -988,7 +1001,6 @@ async function saveAllDirtyChanges() {
 // =================================================================
 jQuery(async () => {
     try {
-        // 【最终修正】参考 AI指引助手 脚本，定义符合扩展菜单列表的按钮HTML
         // 1. 使用 'list-group-item flex-container flexGap5 interactable' 类，这是SillyTavern扩展菜单项的标准样式。
         // 2. 保持图标 <i> 和文字 <span> 的结构，使其与菜单中其他项保持一致。
         const buttonHtml = `
@@ -1020,4 +1032,5 @@ jQuery(async () => {
         console.error(`[${pluginName}] Initialization failed:`, error);
     }
 });
+
 
